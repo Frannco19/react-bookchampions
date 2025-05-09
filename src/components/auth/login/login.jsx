@@ -1,14 +1,8 @@
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useRef, useState } from "react";
-/*
-Responsabilidad: formulario de autenticación.
-Actualmente es estático. No tiene ningún estado ni lógica de autenticación. Sirve solo como UI.
-Para hacerlo funcional:
-Necesitarías usar useState para email y contraseña.
-Verificar las credenciales.
-Controlar el acceso a App.jsx con un isLoggedIn.
-*/
-const Login = () => {
+import { useNavigate } from "react-router";
+
+const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({
@@ -18,6 +12,8 @@ const Login = () => {
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+
+    const navigate = useNavigate();
 
     const handleChangeEmail = (event) => {
         setEmail(event.target.value);
@@ -58,7 +54,8 @@ const Login = () => {
             return;
         }
 
-        alert(`Inicio de sesión correcto para email: ${email} `)
+        onLogin();
+        navigate("/library")
     }
 
     return (
@@ -105,6 +102,7 @@ const Login = () => {
         </Card>
     );
 };
+
 
 
 export default Login;

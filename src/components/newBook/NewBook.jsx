@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 
 const NewBook = ({ onBookAdded }) => {
-    // Este componente controla el estado de cada input individualmente:
-    // Este patrón se llama formulario controlado en React.
     const [title, setTitle] = useState('');
     const [author, setAuthor] = useState('');
     const [rating, setRating] = useState('');
@@ -46,7 +44,7 @@ const NewBook = ({ onBookAdded }) => {
             available
         };
 
-        onBookAdded(newBook); // callback que viene desde App.jsx
+        onBookAdded(newBook);
         setTitle('');
         setAuthor('');
         setRating('');
@@ -54,8 +52,6 @@ const NewBook = ({ onBookAdded }) => {
         setImageUrl('');
         setAvailable(false);
     }
-
-    // Después de enviar, limpia todos los campos
 
     return (
         <Card className="m-4 w-50" bg="success">

@@ -11,7 +11,7 @@ const BookItem = ({
     imageUrl,
     available = false,
     onBookSelected,
-    onBookDeleted
+    onDelete
 }) => {
     // Lógica de visualización:
     //Usa estrellas llenas y vacías según rating.
@@ -23,8 +23,8 @@ const BookItem = ({
         onBookSelected(title);
     }
 
-    const handleDeletedBook = () => {
-        
+    const handleDeleteBook = () => {
+        onDelete(id, title)
     }
 
     const filledStars = Array.from({ length: Math.min(rating, 5) }, (_, i) =>
@@ -57,8 +57,8 @@ const BookItem = ({
                 </div>
                 <p>{pageCount} páginas</p>
                 <p>{available ? "Disponible" : "No disponible"}</p>
+                <Button variant="danger" className="me-2" onClick={handleDeleteBook}>Eliminar libro</Button>
                 <Button onClick={handleSelectBook}>Seleccionar libro</Button>
-                <Button onClick={handleSelectBook}>Eliminar libro</Button>
             </Card.Body>
         </Card>
     )

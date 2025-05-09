@@ -1,31 +1,41 @@
 import { useState } from "react"
-import { books as BOOK_DATA } from "./data/books"
-import Books from "./components/books/Books"
-import NewBook from "./components/newBook/NewBook"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router"
+
 import Login from "./components/auth/login/Login"
+import Dashboard from "./components/dashboard/Dashboard"
+import NotFound from "./components/routes/notFound/NotFound"
+import Protected from "./components/routes/protected/Protected"
 
-// App.jsx es el contenedor principal del estado.
+
 const App = () => {
-  // BOOK_DATA es una constante que actúa como fuente inicial (simulando una "base de datos").
-  const [books, setBooks] = useState(BOOK_DATA);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
-  const handleAddBook = (newBook) => {
-
-    const newBookWithId = {
-      id: books[books.length - 1].id + 1,
-      ...newBook,
-    };
-    setBooks(prevBooks => [newBookWithId, ...prevBooks])
+  const handleLogin = () => {
+    setIsSignedIn(true);
   }
-  //Em la etiqueta verde pasa los books al componente Books y la función handleAddBook al componente NewBook
+
+  const handleLogout = () => {
+    setIsSignedIn(false);
+  }
+  
   return (
     <div className="d-flex flex-column align-items-center ">
-      <h1>Book Champions</h1>
-      <p>¡Bienvenidos a book champions!</p>
-      <NewBook onBookAdded={handleAddBook} />
-      <Books books={books} />
-      <Login /> 
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="login" />} />
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+        <Route
+          path="/library"
+          element={
+            <Protected isSignedIn={isSignedIn}>
+              <Dashboard onLogout={handleLogout} />
+            </Protected>
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  </div>
   )
 }
 
