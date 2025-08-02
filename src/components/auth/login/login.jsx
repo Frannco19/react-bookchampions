@@ -61,7 +61,7 @@ const Login = ({ onLogin }) => {
     }
 
     return (
-        <Card className="login-page">
+        <Card className="mt-5 mx-5 p-5 px-5 shadow">
             <Card.Body>
                 <Row className="mb-2">
                     <h5>¡Bienvenidos a Books Champion!</h5>
