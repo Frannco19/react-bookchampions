@@ -1,6 +1,8 @@
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import './login.css';
+
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -59,7 +61,7 @@ const Login = ({ onLogin }) => {
     }
 
     return (
-        <Card className="mt-5 mx-3 p-3 px-5 shadow">
+        <Card className="login-page">
             <Card.Body>
                 <Row className="mb-2">
                     <h5>¡Bienvenidos a Books Champion!</h5>
