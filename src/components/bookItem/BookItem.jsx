@@ -13,12 +13,6 @@ const BookItem = ({
     onBookSelected,
     onDelete
 }) => {
-    // Lógica de visualización:
-    //Usa estrellas llenas y vacías según rating.
-    //Usa Badge para mostrar si está disponible.
-    //Al hacer clic en el botón "Seleccionar libro", ejecuta onBookSelected(title) que modifica selectedBook en Books.
-    //Este patrón se llama “lifting state up”: el estado se mantiene en el componente padre (Books), y el hijo solo lo notifica mediante una prop callback.
-
     const handleSelectBook = () => {
         onBookSelected(title);
     }
