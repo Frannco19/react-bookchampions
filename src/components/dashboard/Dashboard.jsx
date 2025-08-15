@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-import { books as BOOK_DATA } from "../../data/books"
 
 import Books from "../books/Books"
 import NewBook from "../newBook/NewBook"
