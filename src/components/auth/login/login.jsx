@@ -1,6 +1,9 @@
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import AuthContainer from "../authContainer/AuthContainer";
+import ToggleTheme from "../../shared/toggleTheme/ToggleTheme";
+
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');
@@ -58,52 +61,51 @@ const Login = ({ onLogin }) => {
         navigate("/library")
     }
 
-     const handleRegisterClick = () => {
+    const handleRegisterClick = () => {
         navigate("/register")
     }
 
     return (
-        <Card className="mt-5 mx-5 p-5 px-5 shadow">
-            <Card.Body>
-                <Row className="mb-2">
-                    <h5>¡Bienvenidos a Books Champion!</h5>
+        <AuthContainer>
+            <Form onSubmit={handleSubmit}>
+                <FormGroup className="mb-4">
+                    <Form.Control
+                        className={errors.email ? "border border-danger" : ""}
+                        type="text"
+                        placeholder="Ingresar email"
+                        onChange={handleChangeEmail}
+                        value={email}
+                        ref={emailRef}
+                    />
+                    {errors.email &&
+                        <p className="text-danger mt-2">Debe completar el campo email</p>}
+                </FormGroup>
+                <FormGroup className="mb-4">
+                    <Form.Control
+                        className={errors.password && "border border-danger"}
+                        type="password"
+                        placeholder="Ingresar contraseña"
+                        onChange={handleChangePassword}
+                        value={password}
+                        ref={passwordRef}
+                    />
+                    {errors.password &&
+                        <p className="text-danger mt-2">Debe completar el campo password</p>}
+                </FormGroup>
+                <Row>
+                    <Col />
+                    <Col md={6} className="d-flex justify-content-end">
+                        <Button variant="secondary" type="submit">
+                            Iniciar sesión
+                        </Button>
+                    </Col>
                 </Row>
-                <Form onSubmit={handleSubmit}>
-                    <FormGroup className="mb-4">
-                        <Form.Control
-                            className={errors.email ? "border border-danger" : ""}
-                            type="text"
-                            placeholder="Ingresar email"
-                            onChange={handleChangeEmail}
-                            value={email}
-                            ref={emailRef}
-                        />
-                        {errors.email &&
-                            <p className="text-danger mt-2">Debe completar el campo email</p>}
-                    </FormGroup>
-                    <FormGroup className="mb-4">
-                        <Form.Control
-                            className={errors.password && "border border-danger"}
-                            type="password"
-                            placeholder="Ingresar contraseña"
-                            onChange={handleChangePassword}
-                            value={password}
-                            ref={passwordRef}
-                        />
-                        {errors.password &&
-                            <p className="text-danger mt-2">Debe completar el campo password</p>}
-                    </FormGroup>
-                    <Row>
-                        <Col />
-                        <Col md={6} className="d-flex justify-content-end">
-                            <Button variant="secondary" type="submit">
-                                Iniciar sesión
-                            </Button>
-                        </Col>
-                    </Row>
-                </Form>
-            </Card.Body>
-        </Card>
+                <Row className="mt-4">
+                    <p className="text-center fw-bold">¿No posee cuenta?</p>
+                    <Button onClick={handleRegisterClick}>Registrarse</Button>
+                </Row>
+            </Form>
+        </AuthContainer>
     );
 };
 

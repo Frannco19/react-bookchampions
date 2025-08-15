@@ -1,77 +1,60 @@
 import { useState, useEffect } from "react";
 import { Button, Card, Col, Form, Row } from "react-bootstrap";
 import Select from "react-select";
-import { multiColourStyles } from "./NewBook.data";
+import { useNavigate } from "react-router";
+import { initialForm, multiColourStyles } from "./NewBook.data";
+import { getAuthors } from "./NewBook.server";
 
 const NewBook = ({ onBookAdded }) => {
-    const [title, setTitle] = useState('');
-    const [authors, setAuthors] = useState('');
-    const [rating, setRating] = useState('');
-    const [pageCount, setPageCount] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
-    const [available, setAvailable] = useState(false);
+    const [form, setForm] = useState(initialForm);
 
-    const [authorOptions, setAuthorOptions] = useState([])
 
-     useEffect(() => {
-        fetch("https://localhost:7120/api/author")
-            .then(res => res.json())
-            .then(data => {
+    const [authorOptions, setAuthorOptions] = useState([]);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        getAuthors(
+            (data) => {
                 setAuthorOptions([...data.result.map(author => ({
                     value: author.id,
                     label: author.name
                 }))])
+            },
+            () => {
 
             })
-            .catch(err => console.log(err))
     }, [])
 
-    const handleChangeTitle = (event) => {
-        setTitle(event.target.value)
-    }
-
-    const handleChangeAuthor = (event) => {
-        setAuthors(event.target.value)
-    }
-
-    const handleChangeRating = (event) => {
-        setRating(event.target.value)
-    }
-
-    const handleChangePageCount = (event) => {
-        setPageCount(event.target.value)
-    }
-
-    const handleChangeImageUrl = (event) => {
-        setImageUrl(event.target.value)
-    }
-
-    const handleChangeAvailability = (event) => {
-        setAvailable(event.target.checked)
+    const handleChangeField = (newForm) => {
+        setForm(prevForm => ({
+            ...prevForm,
+            ...newForm
+        }))
     }
 
     const handleAddBook = (event) => {
         event.preventDefault();
         const newBook = {
-            title,
-            authors,
-            rating,
-            pageCount,
-            imageUrl,
-            available
+            title: form.title,
+            authorIds: form.authors.map(author => author.value),
+            rating: parseInt(form.rating),
+            pagesAmount: parseInt(form.pageAmount),
+            imageUrl: form.imageUrl,
+            summary: form.summary,
+            available: form.isAvailable
         };
 
         onBookAdded(newBook);
-        setTitle('');
-        setAuthors('');
-        setRating('');
-        setPageCount('');
-        setImageUrl('');
-        setAvailable(false);
+        setForm(initialForm)
+    }
+
+    const handleGoBack = () => {
+        navigate("/library");
     }
 
     return (
-       <Card className="m-4 w-50" bg="success">
+        <Card className="m-4 w-50" bg="success">
             <Card.Body>
                 <Form className="text-white" onSubmit={handleAddBook} >
                     <Row>
@@ -81,8 +64,8 @@ const NewBook = ({ onBookAdded }) => {
                                 <Form.Control
                                     type="text"
                                     placeholder="Ingresar título"
-                                    onChange={handleChangeTitle}
-                                    value={title}
+                                    onChange={(event) => handleChangeField({ title: event.target.value })}
+                                    value={form.title}
                                 />
                             </Form.Group>
                         </Col>
@@ -92,12 +75,23 @@ const NewBook = ({ onBookAdded }) => {
                                 <Select
                                     placeholder="No hay autores seleccionados"
                                     isMulti
-                                    onChange={handleChangeAuthor}
+                                    onChange={(authors) => handleChangeField({ authors })}
                                     name="authors"
                                     options={authorOptions}
-                                    value={authors}
+                                    value={form.authors}
                                     styles={multiColourStyles}
                                 />
+                            </Form.Group>
+                        </Col>
+                        <Col md={12}>
+                            <Form.Group className="mb-3" controlId="summary">
+                                <Form.Label>Resumen</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    placeholder="Ingresa un resumen del libro"
+                                    onChange={(event) => handleChangeField({ summary: event.target.value })}
+                                    value={form.summary} />
                             </Form.Group>
                         </Col>
                     </Row>
@@ -110,8 +104,8 @@ const NewBook = ({ onBookAdded }) => {
                                     placeholder="Ingresar cantidad de estrellas"
                                     max={5}
                                     min={0}
-                                    onChange={handleChangeRating}
-                                    value={rating}
+                                    onChange={(event) => handleChangeField({ rating: event.target.value })}
+                                    value={form.rating}
                                 />
                             </Form.Group>
                         </Col>
@@ -122,9 +116,8 @@ const NewBook = ({ onBookAdded }) => {
                                     type="number"
                                     placeholder="Ingresar cantidad de páginas"
                                     min={1}
-                                    onChange={handleChangePageCount}
-                                    value={pageCount}
-
+                                    onChange={(event) => handleChangeField({ pageAmount: event.target.value })}
+                                    value={form.pageAmount}
                                 />
                             </Form.Group>
                         </Col>
@@ -135,8 +128,8 @@ const NewBook = ({ onBookAdded }) => {
                             <Form.Control
                                 type="text"
                                 placeholder="Ingresar url de imagen"
-                                onChange={handleChangeImageUrl}
-                                value={imageUrl}
+                                onChange={(event) => handleChangeField({ imageUrl: event.target.value })}
+                                value={form.imageUrl}
                             />
                         </Form.Group>
                     </Row>
@@ -147,13 +140,20 @@ const NewBook = ({ onBookAdded }) => {
                                 id="available"
                                 className="mb-3"
                                 label="¿Disponible?"
-                                onChange={handleChangeAvailability}
-                                checked={available}
-
+                                onChange={(event) => handleChangeField({ isAvailable: event.target.checked })}
+                                checked={form.isAvailable}
                             />
-                            <Button variant="primary" type="submit">
-                                Agregar lectura
-                            </Button>
+                            <Col md={6} className="d-flex justify-content-end">
+                                <Button className="me-3"
+                                    onClick={handleGoBack}
+                                    variant="secondary"
+                                    type="button">
+                                    Volver
+                                </Button>
+                                <Button variant="primary" type="submit">
+                                    Agregar lectura
+                                </Button>
+                            </Col>
                         </Col>
                     </Row>
                 </Form>

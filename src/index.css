@@ -10,11 +10,4 @@ html {
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 50%, #26c6da 100%);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  color: #ffffff;
-  min-height: 100vh;
 }
-
